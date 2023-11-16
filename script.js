@@ -7,7 +7,6 @@ const highScoresArea = document.querySelector('.highscore');
 
 const generateRandomNumber = () => {
   const secretNumber = Math.trunc(Math.random() * 20) + 1;
-  console.log(secretNumber);
   return secretNumber;
 };
 
@@ -16,6 +15,7 @@ const startNewGame = () => {
   document.querySelector('body').style.backgroundColor = 'black';
   question.style.width = '25rem';
   question.textContent = '???';
+  document.querySelector('.number-input').value = '';
   setScores(20);
   setGuessMessage('Начни угадывать!');
   document.querySelector('.check').addEventListener('click', testNumber);
@@ -56,30 +56,21 @@ const setGuessMessage = (message) => {
 
 const testNumber = () => {
   const guessingNumber = Number(document.querySelector('.number-input').value);
-  // incorrect input
   if (!guessingNumber) {
     setGuessMessage('Введите число!');
-    // Player WON
   } else if (guessingNumber === secretNumber) {
     wonGame(scores);
-    // Too HIGHT
-  } else if (guessingNumber > secretNumber) {
+  } else if (guessMessage !== secretNumber) {
     if (scores > 1) {
-      setGuessMessage('Слишком много!');
       scores--;
+      setScores(scores);
       score.textContent = scores;
     } else {
       looseGame();
     }
-    // Too LOW
-  } else if (guessingNumber < secretNumber) {
-    if (scores > 1) {
-      setGuessMessage('Слишком мало!');
-      scores--;
-      setScores(scores);
-    } else {
-      looseGame();
-    }
+    setGuessMessage(
+      guessingNumber > secretNumber ? 'Слишком много!' : 'Слишком мало!'
+    );
   }
 };
 
@@ -88,8 +79,8 @@ let secretNumber = generateRandomNumber();
 let scores = 20;
 let highScore = 0;
 
-startNewGame();
-
 document.querySelector('.again').addEventListener('click', () => {
   startNewGame();
 });
+
+startNewGame();
